@@ -4,16 +4,25 @@ from datetime import datetime
 
 def main():
     print("TODO list creator and manager")
-    print("[1] Create tasks")
-    print("[2] Mark finished tasks")
-    print("[3] View tasks")
-    selector = int(input("Enter what do you want to do : ").strip())
-    if selector == 1:
-        task_creator()
-    elif selector == 2:
-        task_status_modifier()
-    elif selector == 3:
-        pass
+    while True:
+        print("[1] Create tasks")
+        print("[2] Mark finished tasks")
+        print("[3] View tasks")
+        print("[4] Delete tasks")
+        print("[5] Quit")
+        selector = int(input("Enter what do you want to do : ").strip())
+        if selector == 1:
+            task_creator()
+        elif selector == 2:
+            task_status_modifier()
+        elif selector == 3:
+            task_viewer()
+        elif selector == 4:
+            task_data_deleter()
+        elif selector == 5:
+            break
+        else:
+            print("Wrong input")
 
 
 def task_creator():
@@ -66,6 +75,27 @@ def task_status_modifier():
 
 
 def task_viewer():
+    todo_dict = {}
+    today = date_time_getter("date")
+    print("ctrl++c to exit viewing tasks")
+    try:
+        with open(f"lists/{today}.csv", mode="r", newline="") as file:
+            reader = csv.reader(file)
+            for no, row in enumerate(reader, start=1):
+                todo_dict[no] = row
+                if len(row) == 3 and row[2] == "created":
+                    print(f"[{no}] {row[1]} : Pending")
+                elif len(row) == 5 and (
+                    row[4] == "Done" or row[4] == "Moved" or row[4] == "Cancelled"
+                ):
+                    print(f"[{no}] {row[1]} : {row[4]}")
+                else:
+                    print(f"[{no}] ------N/A------")
+    except FileNotFoundError:
+        print("There is no TODO created today")
+
+
+def task_data_deleter():
     pass
 
 
