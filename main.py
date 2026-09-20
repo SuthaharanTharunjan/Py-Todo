@@ -96,7 +96,49 @@ def task_viewer():
 
 
 def task_data_deleter():
-    pass
+    print("ctrl++c to exit marking task status")
+    today = date_time_getter("date")
+    todo_dict = {}
+    available_task_no = set()
+    temp_todo_list = []
+    try:
+        with open(f"lists/{today}.csv", mode="r", newline="") as file:
+            reader = csv.reader(file)
+            print("Select the TODO")
+            for no, row in enumerate(reader, start=1):
+                todo_dict[no] = row
+                if len(row) == 3 and row[2] == "created":
+                    print(f"[{no}] {row[1]}")
+                    available_task_no.add(no)
+                elif len(row) == 5 and (
+                    row[4] == "Done" or row[4] == "Moved" or row[4] == "Cancelled"
+                ):
+                    print(f"[{no}] {row[4]}")
+                    available_task_no.add(no)
+
+        while True:
+            try:
+                todo_no = todo_no_getter(available_task_no)
+                temp_todo_data = todo_dict.pop(todo_no)
+                temp_todo_list.append(temp_todo_data)
+            except KeyError:
+                print("Wrong TODO no")
+            except KeyboardInterrupt:
+                print("Exiting......")
+                break
+
+        with open(f"lists/{today}_del.csv", mode="w", newline="") as file:
+            writer = csv.writer(file)
+            for todo_del_row in temp_todo_list:
+                writer.writerow(todo_del_row)
+
+        with open(f"lists/{today}.csv", mode="w", newline="") as file:
+            writer = csv.writer(file)
+            for todo_row in todo_dict.values():
+                writer.writerow(todo_row)
+
+    except FileNotFoundError:
+        print("There is no TODO created today")
 
 
 def date_time_getter(choice):
