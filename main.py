@@ -7,12 +7,12 @@ def main():
     print("[1] Create tasks")
     print("[2] Mark finished tasks")
     print("[3] View tasks")
-    selector = input("Enter what do you want to do : ").strip()
-    if selector == "1":
+    selector = int(input("Enter what do you want to do : ").strip())
+    if selector == 1:
         task_creator()
-    elif selector == "2":
-        pass
-    elif selector == "3":
+    elif selector == 2:
+        task_status_modifier()
+    elif selector == 3:
         pass
 
 
@@ -35,9 +35,31 @@ def task_creator():
 def task_status_modifier():
     print("ctrl++c to exit marking task status")
     today = date_time_getter("date")
-    with open(f"lists/{today}.csv", mode="r", newline="") as file:
-        reader = csv.reader(file)
-        print(list(reader))
+    todo_dict = {}
+    try:
+        with open(f"lists/{today}.csv", mode="r", newline="") as file:
+            reader = csv.reader(file)
+            print("Select the ToDo")
+            for no, row in enumerate(reader, start=1):
+                todo_dict[no] = row
+                print(f"[{no}] {row[1]}")
+        while True:
+            try:
+                todo_no = int(input("TODO no : ").strip())
+                state = status_getter()
+                todo_dict[todo_no].append(date_time_getter("time"))
+                todo_dict[todo_no].append(state)
+            except KeyError:
+                print("Wrong TODO no")
+            except KeyboardInterrupt:
+                print("Exiting......")
+                break
+        with open(f"lists/{today}.csv", mode="w", newline="") as file:
+            writer = csv.writer(file)
+            for todo_row in todo_dict.values():
+                writer.writerow(todo_row)
+    except FileNotFoundError:
+        print("There is no TODO created today")
 
 
 def date_time_getter(choice):
@@ -51,6 +73,16 @@ def date_time_getter(choice):
         raise ValueError
 
 
+def status_getter():
+    states_dict = {1: "Done", 2: "Moved", 3: "Cancelled"}
+    print("[1] Done     [2] Moved     [3] Cancelled")
+    while True:
+        state_identifier = int(input("Enter the state of the task : ").strip())
+        if state_identifier == 1 or state_identifier == 2 or state_identifier == 3:
+            return states_dict[state_identifier]
+        else:
+            print("wrong input")
+
+
 if __name__ == "__main__":
-    # main()
-    task_status_modifier()
+    main()
