@@ -1,9 +1,22 @@
 import csv
 from datetime import datetime
 
+LINE_UP = "\033[1A"
+LINE_CLEAR = "\x1b[2K"
+
+PROGRAM_NAME = r"""
+   ))    wWw  wWw    (o)__(o)  .-.     _        .-.     
+  (o0)-. (O)  (O)    (__  __)c(O_O)c  /||_    c(O_O)c   
+   | (_))( \  / )      (  ) ,'.---.`,  /o_)  ,'.---.`,  
+   | .-'  \ \/ /        )( / /|_|_|\ \/ |(\ / /|_|_|\ \ 
+   |(      \o /        (  )| \_____/ || | ))| \_____/ | 
+    \)    _/ /          )/ '. `---' .`| |// '. `---' .` 
+    (    (_.'          (     `-...-'  \__/    `-...-'   
+"""
+
 
 def main():
-    print("TODO list creator and manager")
+    print(PROGRAM_NAME)
     while True:
         print("[1] Create tasks")
         print("[2] Mark finished tasks")
@@ -12,16 +25,23 @@ def main():
         print("[5] Quit")
         selector = int(input("Enter what do you want to do : ").strip())
         if selector == 1:
+            print((LINE_UP + LINE_CLEAR) * 6, end="")
             task_creator()
         elif selector == 2:
+            print((LINE_UP + LINE_CLEAR) * 6, end="")
             task_status_modifier()
         elif selector == 3:
+            print((LINE_UP + LINE_CLEAR) * 6, end="")
             task_viewer()
         elif selector == 4:
+            print((LINE_UP + LINE_CLEAR) * 6, end="")
             task_data_deleter()
         elif selector == 5:
+            print((LINE_UP + LINE_CLEAR) * 6, end="")
+            print("Closing the Programme")
             break
         else:
+            print((LINE_UP + LINE_CLEAR) * 6, end="")
             print("Wrong input")
 
 
