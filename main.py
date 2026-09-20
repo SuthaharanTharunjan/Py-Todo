@@ -36,16 +36,19 @@ def task_status_modifier():
     print("ctrl++c to exit marking task status")
     today = date_time_getter("date")
     todo_dict = {}
+    available_task_no = set()
     try:
         with open(f"lists/{today}.csv", mode="r", newline="") as file:
             reader = csv.reader(file)
-            print("Select the ToDo")
+            print("Select the TODO")
             for no, row in enumerate(reader, start=1):
                 todo_dict[no] = row
-                print(f"[{no}] {row[1]}")
+                if len(row) == 3 and row[2] == "created":
+                    print(f"[{no}] {row[1]}")
+                    available_task_no.add(no)
         while True:
             try:
-                todo_no = int(input("TODO no : ").strip())
+                todo_no = todo_no_getter(available_task_no)
                 state = status_getter()
                 todo_dict[todo_no].append(date_time_getter("time"))
                 todo_dict[todo_no].append(state)
@@ -60,6 +63,10 @@ def task_status_modifier():
                 writer.writerow(todo_row)
     except FileNotFoundError:
         print("There is no TODO created today")
+
+
+def task_viewer():
+    pass
 
 
 def date_time_getter(choice):
@@ -82,6 +89,15 @@ def status_getter():
             return states_dict[state_identifier]
         else:
             print("wrong input")
+
+
+def todo_no_getter(no_set):
+    while True:
+        no = int(input("TODO no : ").strip())
+        if no in no_set:
+            return no
+        else:
+            print("Wrong No")
 
 
 if __name__ == "__main__":
