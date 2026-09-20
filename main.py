@@ -26,10 +26,18 @@ def task_creator():
             try:
                 todo = input("TODO : ")
                 time_now = date_time_getter("time")
-                writer.writerow([time_now, todo])
+                writer.writerow([time_now, todo, "created"])
             except KeyboardInterrupt:
                 print("Exiting......")
                 break
+
+
+def task_status_modifier():
+    print("ctrl++c to exit marking task status")
+    today = date_time_getter("date")
+    with open(f"lists/{today}.csv", mode="r", newline="") as file:
+        reader = csv.reader(file)
+        print(list(reader))
 
 
 def date_time_getter(choice):
@@ -44,4 +52,5 @@ def date_time_getter(choice):
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    task_status_modifier()
