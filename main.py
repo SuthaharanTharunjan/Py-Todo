@@ -3,10 +3,11 @@ from datetime import datetime
 import time
 
 LINE_UP = "\033[1A"
-LINE_DOWN = "\033[1B"
 LINE_CLEAR = "\x1b[2K\r"
-SAVE_CURSOR = "\033[s"
-RESTORE_CURSOR = "\033[u"
+
+RED = "\033[91m"
+GREEN = "\033[92m"
+RESET = "\033[0m"
 
 PROGRAM_NAME = r"""
    ))    wWw  wWw    (o)__(o)  .-.     _        .-.     
@@ -21,7 +22,7 @@ PROGRAM_NAME = r"""
 
 def main():
     print(PROGRAM_NAME)
-    print("Starting the programme......")
+    print(f"{GREEN}Starting the programme......{RESET}")
     while True:
         no_of_lines = 0
         print("Select an option")
@@ -54,11 +55,11 @@ def main():
             no_of_lines += 1
             line_cleaner(no_of_lines)
 
-    print("Closing the Programme.......")
+    print(f"{RED}Closing the Programme.......{RESET}")
 
 
 def task_creator():
-    print("Starting task creation...")
+    print(f"{GREEN}Starting task creation...{RESET}")
     no_of_lines = 0
     today = date_time_getter("date")
     with open(f"lists/{today}.csv", mode="a", newline="") as file:
@@ -72,12 +73,12 @@ def task_creator():
             except KeyboardInterrupt:
                 print(LINE_CLEAR, end="", flush=True)
                 line_cleaner(no_of_lines)
-                print("Exiting task creator...")
+                print(f"{RED}Exiting task creator...{RESET}")
                 break
 
 
 def task_status_modifier():
-    print("Starting task status modifier...")
+    print(f"{GREEN}Starting task status modifier...{RESET}")
     today = date_time_getter("date")
     todo_dict = {}
     temp_todo_data = {}
@@ -95,8 +96,8 @@ def task_status_modifier():
             no_of_lines = 0
             if len(available_task_no) == 0:
                 print("No modifiable available")
-                no_of_lines += 1
-                time.sleep(0.3)
+                time.sleep(0.4)
+                line_cleaner(1)
                 break
 
             print("Select the TODO")
@@ -110,6 +111,7 @@ def task_status_modifier():
                 todo_no = todo_no_getter(available_task_no)
                 available_task_no.remove(todo_no)
                 state = status_getter()
+
                 todo_dict[todo_no].append(date_time_getter("time"))
                 todo_dict[todo_no].append(state)
 
@@ -119,6 +121,7 @@ def task_status_modifier():
                 line_cleaner(1)
             except KeyboardInterrupt:
                 print(LINE_CLEAR, end="", flush=True)
+                line_cleaner(no_of_lines)
                 break
             else:
                 line_cleaner(no_of_lines)
@@ -132,14 +135,13 @@ def task_status_modifier():
         print("There is no TODO created today")
         time.sleep(0.4)
         line_cleaner(1)
-    line_cleaner(no_of_lines)
-    print("Exiting task status modifier...")
+    print(f"{RED}Exiting task status modifier...{RESET}")
 
 
 def task_viewer():
     todo_dict = {}
     today = date_time_getter("date")
-    print("Starting task viewer...")
+    print(f"{GREEN}Starting task viewer...{RESET}")
     no_of_lines = 0
     try:
         with open(f"lists/{today}.csv", mode="r", newline="") as file:
@@ -162,12 +164,12 @@ def task_viewer():
         time.sleep(0.4)
         line_cleaner(1)
 
-    print("Stopping task viewer...")
+    print(f"{RED}Stopping task viewer...{RESET}")
     # line_cleaner(no_of_lines)
 
 
 def task_data_deleter():
-    print("Starting task recycler...")
+    print(f"{GREEN}Starting task recycler...{RESET}")
     no_of_lines = 0
     today = date_time_getter("date")
     todo_dict = {}
@@ -236,7 +238,7 @@ def task_data_deleter():
         time.sleep(0.4)
         line_cleaner(1)
     line_cleaner(no_of_lines)
-    print("Exiting task recycler...")
+    print(f"{RED}Exiting task recycler...{RESET}")
 
 
 def date_time_getter(choice):
@@ -274,25 +276,22 @@ def status_getter():
 
 
 def todo_no_getter(no_set):
-    no_of_lines = 0
     while True:
         try:
-            no = int(input("TODO no : ").strip())
-            no_of_lines += 1
+            user_input = input("TODO no : ").strip()
+            no = int(user_input)
             if no in no_set:
-                line_cleaner(no_of_lines)
+                line_cleaner(1)
                 return no
             else:
                 print("Wrong No")
                 time.sleep(0.4)
                 line_cleaner(2)
-                no_of_lines -= 1
 
         except ValueError:
             print("Not a number")
             time.sleep(0.4)
             line_cleaner(2)
-            no_of_lines -= 1
 
 
 def line_cleaner(no_of_lines_before_cursor):
