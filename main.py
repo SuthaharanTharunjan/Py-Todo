@@ -3,7 +3,10 @@ from datetime import datetime
 import time
 
 LINE_UP = "\033[1A"
+LINE_DOWN = "\033[1B"
 LINE_CLEAR = "\x1b[2K\r"
+SAVE_CURSOR = "\033[s"
+RESTORE_CURSOR = "\033[u"
 
 PROGRAM_NAME = r"""
    ))    wWw  wWw    (o)__(o)  .-.     _        .-.     
@@ -67,7 +70,7 @@ def task_creator():
                 time_now = date_time_getter("time")
                 writer.writerow([time_now, todo, "created"])
             except KeyboardInterrupt:
-                LINE_CLEAR
+                print(LINE_CLEAR, end="", flush=True)
                 line_cleaner(no_of_lines)
                 print("Exiting task creator...")
                 break
@@ -115,7 +118,7 @@ def task_status_modifier():
                 time.sleep(0.4)
                 line_cleaner(1)
             except KeyboardInterrupt:
-                LINE_CLEAR
+                print(LINE_CLEAR, end="", flush=True)
                 break
             else:
                 line_cleaner(no_of_lines)
@@ -213,8 +216,7 @@ def task_data_deleter():
                 time.sleep(0.4)
                 line_cleaner(1)
             except KeyboardInterrupt:
-                LINE_CLEAR
-                line_cleaner(no_of_lines)
+                print(LINE_CLEAR, end="", flush=True)
                 break
             else:
                 line_cleaner(no_of_lines)
