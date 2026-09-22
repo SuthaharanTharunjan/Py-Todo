@@ -27,38 +27,45 @@ PROGRAM_NAME = r"""
 def main():
     print(PROGRAM_NAME)
     print(f"{GREEN}Starting the programme......{RESET}")
-    while True:
-        no_of_lines = 0
-        print("Select an option")
-        print("[1] Create tasks")
-        print("[2] Mark finished tasks")
-        print("[3] View tasks")
-        print("[4] Delete tasks")
-        print("[5] Quit")
-        no_of_lines += 6
-        selector = input("Enter what do you want to do : ").strip()
-        no_of_lines += 1
-        if selector == "1":
-            line_cleaner(no_of_lines)
-            task_creator()
-        elif selector == "2":
-            line_cleaner(no_of_lines)
-            task_status_modifier()
-        elif selector == "3":
-            line_cleaner(no_of_lines)
-            task_viewer()
-        elif selector == "4":
-            line_cleaner(no_of_lines)
-            task_data_deleter()
-        elif selector == "5":
-            line_cleaner(no_of_lines)
-            break
-        else:
-            print(f"{E1} Wrong input")
-            time.sleep(0.5)
-            no_of_lines += 1
-            line_cleaner(no_of_lines)
 
+    try:
+        while True:
+            no_of_lines = 0
+            print("Select an option")
+            print("[1] Create tasks")
+            print("[2] Mark finished tasks")
+            print("[3] View tasks")
+            print("[4] Delete tasks")
+            print("[5] Quit")
+            no_of_lines += 6
+
+            selector = input("Enter what do you want to do : ").strip()
+            no_of_lines += 1
+
+            if selector == "1":
+                line_cleaner(no_of_lines)
+                task_creator()
+            elif selector == "2":
+                line_cleaner(no_of_lines)
+                task_status_modifier()
+            elif selector == "3":
+                line_cleaner(no_of_lines)
+                task_viewer()
+            elif selector == "4":
+                line_cleaner(no_of_lines)
+                task_data_deleter()
+            elif selector == "5":
+                line_cleaner(no_of_lines)
+                break
+            else:
+                print(f"{E1} Wrong input")
+                time.sleep(0.5)
+                no_of_lines += 1
+                line_cleaner(no_of_lines)
+
+    except (KeyboardInterrupt, EOFError):
+        print(LINE_CLEAR, end="", flush=True)
+        line_cleaner(no_of_lines)
     print(f"{RED}Closing the Programme.......{RESET}")
 
 
@@ -147,7 +154,8 @@ def task_viewer():
     todo_dict = {}
     today = date_time_getter("date")
     print(f"{GREEN}Starting task viewer...{RESET}")
-    no_of_lines = 0
+    stats = {"Pending": 0, "Done": 0, "Moved": 0, "Cancelled": 0}
+
     try:
         with open(f"lists/{today}.csv", mode="r", newline="") as file:
             reader = csv.reader(file)
@@ -155,22 +163,24 @@ def task_viewer():
                 todo_dict[no] = row
                 if len(row) == 3 and row[2] == "created":
                     print(f"[{no:0>2}] {row[1]} : Pending")
-                    no_of_lines += 1
-                elif len(row) == 5 and (
-                    row[4] == "Done" or row[4] == "Moved" or row[4] == "Cancelled"
-                ):
+                    stats["Pending"] += 1
+                elif len(row) == 5 and row[4] in ["Done", "Moved", "Cancelled"]:
                     print(f"[{no:0>2}] {row[1]} : {row[4]}")
-                    no_of_lines += 1
+                    stats[row[4]] += 1
                 else:
                     print(f"[{no:0>2}] ------N/A------")
-                    no_of_lines += 1
+        print("-" * 35)
+        print(
+            f"Total: {sum(stats.values())} | Pending: {stats['Pending']} | Done: {stats['Done']}"
+        )
+        print("-" * 35)
+
     except FileNotFoundError:
         print(f"{E1} There is no TODO created today")
         time.sleep(0.5)
         line_cleaner(1)
 
     print(f"{RED}Stopping task viewer...{RESET}")
-    # line_cleaner(no_of_lines)
 
 
 def task_data_deleter():
@@ -307,8 +317,6 @@ def todo_no_getter(no_set):
 def line_cleaner(no_of_lines_before_cursor):
     for _ in range(no_of_lines_before_cursor):
         print((LINE_UP + LINE_CLEAR), end="", flush=True)
-        # Remove the comment if you want to see the text reprinting(TEXT WILL FLASH) and it may avoid missing text in screen
-        # time.sleep(0.01)
 
 
 if __name__ == "__main__":
