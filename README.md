@@ -28,13 +28,8 @@ This program provides a seamless terminal experience with dynamic screen clearin
 To run this program, you only need Python installed on your computer. No external libraries are required!
 
 1. **Clone or download the repository** to your local machine.
-2. **Create the storage folder:** The program requires a folder named `lists` in the same directory as `main.py` to store your tasks. 
-   
-```bash
-   mkdir lists
-```
 
-3. **Run the application:**
+2. **Run the application:**
 
 ```bash
    python main.py
