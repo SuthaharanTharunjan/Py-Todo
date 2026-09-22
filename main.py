@@ -114,9 +114,9 @@ def task_status_modifier():
 
             try:
                 todo_no = todo_no_getter(available_task_no)
-                available_task_no.remove(todo_no)
                 state = status_getter()
                 if state:
+                    available_task_no.remove(todo_no)
                     todo_dict[todo_no].append(date_time_getter("time"))
                     todo_dict[todo_no].append(state)
 
